@@ -11,7 +11,7 @@ spring:
         format_sql: true
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 jwt:
   secret:
     key: 73fa923586e310a29e07762932ffbbaa4f161448e9c30436ea59d09621c1f5dc
