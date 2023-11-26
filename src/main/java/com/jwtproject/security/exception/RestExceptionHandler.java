@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,9 +20,9 @@ import java.util.List;
 @Slf4j
 @ControllerAdvice
 public class RestExceptionHandler {
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleNotValidException(MethodArgumentNotValidException ex) {
-        log.error(ex.getMessage());
         log.error("Validation failed");
         List<String> errors = new ArrayList<>();
         ex.getAllErrors().forEach(err -> errors.add(err.getDefaultMessage()));
@@ -38,7 +39,7 @@ public class RestExceptionHandler {
     }
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<?> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
-        log.info("User already exists exception");
+        log.error("User already exists exception");
         HttpStatus httpStatus = HttpStatus.EXPECTATION_FAILED;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
@@ -53,7 +54,7 @@ public class RestExceptionHandler {
 * */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiErrorDto> handleRuntimeException(RuntimeException ex) {
-        log.info("Run time exception thrown");
+        log.error("Run time exception thrown");
         if (ex instanceof SignatureException) {
             HttpStatus httpStatus = HttpStatus.FORBIDDEN;
             return ResponseEntity.status(httpStatus)
@@ -84,4 +85,18 @@ public class RestExceptionHandler {
                         .build()
                 );
     }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity handleHttpRequestMethodNotSupportedException (HttpRequestMethodNotSupportedException ex) {
+        log.error("HttpRequestMethodNotSupportedExceptionexception thrown");
+        HttpStatus httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build()
+                );
+    }
+
 }
