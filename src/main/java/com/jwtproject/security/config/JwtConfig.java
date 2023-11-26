@@ -7,10 +7,10 @@ public class JwtConfig {
     @Value("${jwt.secret.key}")
     private String jwtSecretKey;
     @Value("${jwt.secret.expiration.in.miliseconds}")
-    private String expirationInMiliseconds;
+    private Long expirationInMiliseconds;
 
     public String getJwtSecretKey() {
         return jwtSecretKey;
     }
-    public String getExpirationInMiliseconds() { return expirationInMiliseconds; }
+    public Long getExpirationInMiliseconds() { return expirationInMiliseconds; }
 }
