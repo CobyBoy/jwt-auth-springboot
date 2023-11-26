@@ -73,7 +73,6 @@ public class JwtService {
                     .getBody();
         }
         catch (ExpiredJwtException ex) {
-            log.info(ex.getMessage());
             throw new ExpiredTokenException("Your token is expired");
         }
     }
