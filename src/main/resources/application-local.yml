@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+management.endpoints.web.exposure.include: '*'
+jwt:
+  secret:
+    key: 73fa923586e310a29e07762932ffbbaa4f161448e9c30436ea59d09621c1f5dc
+    expiration:
+      in:
+        milliseconds: 1200000

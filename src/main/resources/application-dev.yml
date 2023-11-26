@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost;databaseName=jwt-security;encrypt=true;trustServerCertificate=true;integratedSecurity=true
+    username: ''
+    password: ''
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+        format_sql: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+jwt:
+  secret:
+    key: 73fa923586e310a29e07762932ffbbaa4f161448e9c30436ea59d09621c1f5dc
+    expiration:
+      in:
+        milliseconds: 1200000

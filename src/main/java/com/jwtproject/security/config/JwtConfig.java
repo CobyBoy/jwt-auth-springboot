@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 public class JwtConfig {
     @Value("${jwt.secret.key}")
     private String jwtSecretKey;
-    @Value("${jwt.secret.expiration.in.miliseconds}")
+    @Value("${jwt.secret.expiration.in.milliseconds}")
     private Long expirationInMiliseconds;
 
     public String getJwtSecretKey() {
