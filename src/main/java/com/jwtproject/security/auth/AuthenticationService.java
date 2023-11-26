@@ -24,9 +24,9 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse signUp(RegisterRequest request) {
         Optional<User> user = userRepository.findByEmail(request.getEmail());
-        User newUser = null;
+        User newUser;
         if (user.isEmpty()) {
             newUser = User.builder()
                     .firstName(request.getFirstName())
@@ -42,14 +42,12 @@ public class AuthenticationService {
             throw new UserAlreadyExistsException("An account is already registered with your email address. Please log in.");
         }
         String jwtToken = jwtService.generateToken(newUser);
-
-
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse login(AuthenticationRequest request) {
         log.info("Authenticating user");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
