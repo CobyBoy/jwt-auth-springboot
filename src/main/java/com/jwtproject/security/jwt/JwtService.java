@@ -1,7 +1,9 @@
 package com.jwtproject.security.jwt;
 
 import com.jwtproject.security.config.JwtConfig;
+import com.jwtproject.security.exception.ExpiredTokenException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -62,12 +64,18 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
+        try {
             return Jwts
                     .parserBuilder()
                     .setSigningKey(getSignInKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
+        }
+        catch (ExpiredJwtException ex) {
+            log.info(ex.getMessage());
+            throw new ExpiredTokenException("Your token is expired");
+        }
     }
 
     private Key getSignInKey() {
