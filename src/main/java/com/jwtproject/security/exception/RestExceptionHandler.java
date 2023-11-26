@@ -1,9 +1,11 @@
 package com.jwtproject.security.exception;
 
 import com.jwtproject.security.exception.dto.ApiErrorDto;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,11 +48,34 @@ public class RestExceptionHandler {
                         .build()
                 );
     }
-
+/**
+* Exceptions thrown by the filter
+* */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiErrorDto> handleRuntimeException(RuntimeException ex) {
         log.info("Run time exception thrown");
-        HttpStatus httpStatus = HttpStatus.EXPECTATION_FAILED;
+        if (ex instanceof SignatureException) {
+            HttpStatus httpStatus = HttpStatus.FORBIDDEN;
+            return ResponseEntity.status(httpStatus)
+                    .body(ApiErrorDto.builder()
+                            .httpStatus(httpStatus)
+                            .statusCode(httpStatus.value())
+                            .message("Token is not valid")
+                            .build()
+                    );
+        }
+
+        if (ex instanceof UsernameNotFoundException) {
+            HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
+            return ResponseEntity.status(httpStatus)
+                    .body(ApiErrorDto.builder()
+                            .httpStatus(httpStatus)
+                            .statusCode(httpStatus.value())
+                            .message(ex.getMessage())
+                            .build()
+                    );
+        }
+        HttpStatus httpStatus = HttpStatus.BAD_GATEWAY;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
                         .httpStatus(httpStatus)
@@ -59,18 +84,4 @@ public class RestExceptionHandler {
                         .build()
                 );
     }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiErrorDto> handleUserNotFoundExceptionException(UserNotFoundException ex) {
-        log.info("Run time exception thrown");
-        HttpStatus httpStatus = HttpStatus.EXPECTATION_FAILED;
-        return ResponseEntity.status(httpStatus)
-                .body(ApiErrorDto.builder()
-                        .httpStatus(httpStatus)
-                        .statusCode(httpStatus.value())
-                        .message(ex.getMessage())
-                        .build()
-                );
-    }
-
 }
