@@ -1,8 +1,9 @@
 package com.jwtproject.security.user;
 
-import com.jwtproject.security.auth.AuthenticationRequest;
-import com.jwtproject.security.auth.RegisterRequest;
+import com.jwtproject.security.auth.models.LoginRequest;
+import com.jwtproject.security.auth.models.SignUpRequest;
 import com.jwtproject.security.exception.UserAlreadyExistsException;
+import com.jwtproject.security.user.models.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -25,16 +27,25 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    public UserDetails signUp(@NotNull RegisterRequest request) {
+    public UserDetails signUp(@NotNull SignUpRequest request) {
         User user = findUserByEmail(request.getEmail());
         if (user == null) {
-            return userRepository.save(User.builder()
-                    .firstName(request.getFirstName())
-                    .lastName(request.getLastName())
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .userRole(UserRoles.USER)
-                    .build());
+            try {
+                return userRepository.save(User.builder()
+                        .firstName(request.getFirstName())
+                        .lastName(request.getLastName())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .userRole(UserRoles.USER)
+                        .isAccountVerified(false)
+                        .accessFailedCount(0)
+                        .registeredAt(LocalDateTime.now())
+                        .build());
+            }
+            catch (DataIntegrityViolationException ex) {
+                throw new RuntimeException("There was an error registering the user");
+            }
+
         } else {
             throw new UserAlreadyExistsException("An account is already registered with your email address. Please log in.");
         }
@@ -46,7 +57,7 @@ public class UserService {
         return user.orElse(null);
     }
 
-    public UserDetails login(@NotNull AuthenticationRequest request) {
+    public UserDetails login(@NotNull LoginRequest request) {
         log.info("Authenticating user {}", request.getEmail());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
