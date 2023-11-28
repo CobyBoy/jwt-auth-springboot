@@ -1,5 +1,6 @@
-package com.jwtproject.security.user;
+package com.jwtproject.security.user.models;
 
+import com.jwtproject.security.user.UserRoles;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
