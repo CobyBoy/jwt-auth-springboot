@@ -1,4 +1,4 @@
-package com.jwtproject.security.auth;
+package com.jwtproject.security.auth.models;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class SignUpRequest {
     @NotBlank(message = "You must provide a first name")
     private String firstName;
     @NotBlank(message = "You must provide a last name")

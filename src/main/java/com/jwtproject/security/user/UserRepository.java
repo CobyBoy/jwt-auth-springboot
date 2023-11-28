@@ -1,5 +1,6 @@
 package com.jwtproject.security.user;
 
+import com.jwtproject.security.user.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

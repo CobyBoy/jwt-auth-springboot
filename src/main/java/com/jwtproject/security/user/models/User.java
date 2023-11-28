@@ -1,14 +1,12 @@
 package com.jwtproject.security.user;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,6 +24,10 @@ public class User implements UserDetails {
     private String lastName;
     private String email;
     private String password;
+    private Boolean isAccountVerified;
+    private LocalDateTime registeredAt;
+    private LocalDateTime confirmedRegistrationAt;
+    private Integer accessFailedCount;
     @Enumerated(EnumType.STRING)
     private UserRoles userRole;
 

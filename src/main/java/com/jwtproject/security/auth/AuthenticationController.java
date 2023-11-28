@@ -1,5 +1,8 @@
 package com.jwtproject.security.auth;
 
+import com.jwtproject.security.auth.models.LoginRequest;
+import com.jwtproject.security.auth.models.AuthenticationResponse;
+import com.jwtproject.security.auth.models.SignUpRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
     @PostMapping("/signup")
-    public ResponseEntity<AuthenticationResponse> signUp(@RequestBody @Valid RegisterRequest  request) {
+    public ResponseEntity<AuthenticationResponse> signUp(@RequestBody @Valid SignUpRequest request) {
         return ResponseEntity.ok(authenticationService.signUp(request));
     }
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid LoginRequest request) {
         return ResponseEntity.ok(authenticationService.login(request));
     }
 }

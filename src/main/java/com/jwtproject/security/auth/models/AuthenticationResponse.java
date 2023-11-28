@@ -1,4 +1,4 @@
-package com.jwtproject.security.auth;
+package com.jwtproject.security.auth.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
