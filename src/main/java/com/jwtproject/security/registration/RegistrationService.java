@@ -17,14 +17,11 @@ import org.springframework.stereotype.Service;
 public class RegistrationService {
     private final AccountActivationService accountActivationService;
     @Async
-    public void confirmRegistration(OnRegistrationEvent event) {
+    public void onSignUpConfirmation(OnRegistrationEvent event) {
         log.info("confirm registration event {}", event);
         var user = (User) event.getUserDetails();
-        VerificationToken verificationToken = null;
-        if(user.getVerificationToken() == null) {
-            log.error("User does not have a verification token, create one");
-            verificationToken = accountActivationService.createVerificationToken(user);
-        }
+        VerificationToken verificationToken = accountActivationService.createVerificationToken(user);
+        log.error("User does not have a verification token, create one and send it through email");
         accountActivationService.sendVerificationEmail(user, verificationToken.getToken(), event.getAppUrl());
     }
 }
