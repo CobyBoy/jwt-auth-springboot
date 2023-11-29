@@ -1,8 +1,11 @@
 package com.jwtproject.security.user.models;
 
+import com.jwtproject.security.verificationToken.VerificationToken;
 import com.jwtproject.security.user.UserRoles;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +32,9 @@ public class User implements UserDetails {
     private LocalDateTime registeredAt;
     private LocalDateTime confirmedRegistrationAt;
     private Integer accessFailedCount;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private VerificationToken verificationToken;
     @Enumerated(EnumType.STRING)
     private UserRoles userRole;
 
@@ -65,6 +71,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isAccountVerified;
     }
 }
