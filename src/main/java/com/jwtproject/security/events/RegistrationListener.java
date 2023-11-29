@@ -16,11 +16,11 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationE
     public void onApplicationEvent(OnRegistrationEvent event) {
         log.info("{}",event.getUserDetails().isEnabled());
         if (event.getUserDetails().isEnabled()) {
-            log.error("Account enable, email sent and activated");
+            log.error("Account enable, email has already been sent and activated");
         }
         else {
             log.info("Account is not enable, send email to confirm registration");
-            registrationService.confirmRegistration(event);
+            registrationService.onSignUpConfirmation(event);
         }
     }
 }
