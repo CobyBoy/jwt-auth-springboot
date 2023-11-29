@@ -6,6 +6,7 @@ import com.jwtproject.security.auth.models.SignUpRequest;
 import com.jwtproject.security.events.OnRegistrationEvent;
 import com.jwtproject.security.jwt.JwtService;
 import com.jwtproject.security.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -30,8 +31,8 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse login(LoginRequest request) {
-        String jwtToken = jwtService.generateToken(userService.login(request));
+    public AuthenticationResponse login(LoginRequest request, HttpServletRequest webRequest) {
+        String jwtToken = jwtService.generateToken(userService.login(request, webRequest));
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
