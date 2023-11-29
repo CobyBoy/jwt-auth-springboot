@@ -1,6 +1,5 @@
 package com.jwtproject.security.jwt;
 
-import com.jwtproject.security.config.JwtConfig;
 import com.jwtproject.security.exception.ExpiredTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
