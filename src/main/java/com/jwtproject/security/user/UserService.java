@@ -1,7 +1,7 @@
 package com.jwtproject.security.user;
 
 import com.jwtproject.security.audit.AuthenticationLog;
-import com.jwtproject.security.audit.AuditLoginRepository;
+import com.jwtproject.security.audit.AuthenticationLogRepository;
 import com.jwtproject.security.auth.models.LoginRequest;
 import com.jwtproject.security.auth.models.SignUpRequest;
 import com.jwtproject.security.exception.AccountNotVerifiedException;
@@ -31,7 +31,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final AuditLoginRepository auditLoginRepository;
+    private final AuthenticationLogRepository authenticationLogRepository;
 
     public UserDetails signUp(@NotNull SignUpRequest request) {
         User user = findUserByEmail(request.getEmail());
@@ -84,7 +84,7 @@ public class UserService {
                 .user((User)user)
                 .build();
 
-        auditLoginRepository.save(audit);
+        authenticationLogRepository.save(audit);
         log.info("Logging user by email authenticated?: {}", authentication.isAuthenticated());
         return user;
     }
