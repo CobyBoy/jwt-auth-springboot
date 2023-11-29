@@ -1,5 +1,6 @@
 package com.jwtproject.security.user.models;
 
+import com.jwtproject.security.audit.AuthenticationLog;
 import com.jwtproject.security.verificationToken.VerificationToken;
 import com.jwtproject.security.user.UserRoles;
 import jakarta.persistence.*;
@@ -14,7 +15,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,9 +34,13 @@ public class User implements UserDetails {
     private LocalDateTime registeredAt;
     private LocalDateTime confirmedRegistrationAt;
     private Integer accessFailedCount;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private VerificationToken verificationToken;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<AuthenticationLog> auditLogin;
     @Enumerated(EnumType.STRING)
     private UserRoles userRole;
 
