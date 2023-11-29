@@ -27,6 +27,8 @@ public class SecurityConfig {
                             auth
                                     .requestMatchers("/actuator/**").permitAll();
                             auth
+                                    .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
+                            auth
                                     .requestMatchers("/api/v1/auth/**").permitAll();
                             auth
                                     .requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
