@@ -1,5 +1,6 @@
 package com.jwtproject.security;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class democontroller {
     @GetMapping
-    public String getDemo() {
-        return "Authenticated";
+    public String getDemo(HttpServletRequest request) {
+        return "Authenticated " + request.getHeader("X-Forwarded-For") + "remote addr "+ request.getRemoteAddr() + "remote host "+request.getRemoteHost();
     }
 
 }
