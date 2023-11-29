@@ -9,7 +9,7 @@ spring:
 management.endpoints.web.exposure.include: '*'
 jwt:
   secret:
-    key: 73fa923586e310a29e07762932ffbbaa4f161448e9c30436ea59d09621c1f5dc
+    key: ${JWT_PRIVATE_KEY}
     expiration:
       in:
         milliseconds: 1200000

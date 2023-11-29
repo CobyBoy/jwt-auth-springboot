@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost;databaseName=jwt-security;encrypt=true;trustServerCertificate=true;integratedSecurity=true
+    url: ${SQLSERVER_URL}
     username: ''
     password: ''
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -14,7 +14,7 @@ spring:
       ddl-auto: update
 jwt:
   secret:
-    key: 73fa923586e310a29e07762932ffbbaa4f161448e9c30436ea59d09621c1f5dc
+    key: ${JWT_PRIVATE_KEY}
     expiration:
       in:
         miliseconds: 1200000
