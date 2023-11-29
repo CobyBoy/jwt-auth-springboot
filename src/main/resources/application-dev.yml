@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost;databaseName=jwt-security;encrypt=true;trustServerCertificate=true;integratedSecurity=true
-    username: ''
-    password: ''
+    url: ${SQLSERVER_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     properties:
@@ -11,10 +11,26 @@ spring:
         format_sql: true
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
+    generate-ddl: true
+  messages:
+    basename: messages
+    encoding: UTF-8
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      "[mail.transport.protocol]" : smtp
+      "[mail.smtp.auth]" : true
+      "[mail.smtp.starttls.enable]" : true
+      "[mail.smtp.starttls.required]" : true
+      "[mail.debug]" : true
+      "[mail.smtp.connectiontimeout]" : 5000
 jwt:
   secret:
-    key: 73fa923586e310a29e07762932ffbbaa4f161448e9c30436ea59d09621c1f5dc
+    key: ${JWT_PRIVATE_KEY}
     expiration:
       in:
         milliseconds: 1200000
