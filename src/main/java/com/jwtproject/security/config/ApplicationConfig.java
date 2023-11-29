@@ -1,5 +1,6 @@
 package com.jwtproject.security.config;
 
+import com.jwtproject.security.exception.AccountNotVerifiedException;
 import com.jwtproject.security.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,9 @@ public class ApplicationConfig {
             var user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Email not found"));
             if (!user.isEnabled()) {
                 log.error("Account is not confirmed");
-                throw new UsernameNotFoundException("Account not confirmed!");
+                throw new AccountNotVerifiedException("Account not confirmed!");
             }
-            return null;
+            return user;
         };
     }
 
