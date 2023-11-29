@@ -3,6 +3,7 @@ package com.jwtproject.security.auth;
 import com.jwtproject.security.auth.models.LoginRequest;
 import com.jwtproject.security.auth.models.AuthenticationResponse;
 import com.jwtproject.security.auth.models.SignUpRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.signUp(request, webRequest));
     }
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid LoginRequest request) {
-        return ResponseEntity.ok(authenticationService.login(request));
+    public ResponseEntity<AuthenticationResponse> login(HttpServletRequest webRequest, @RequestBody @Valid LoginRequest request) {
+        return ResponseEntity.ok(authenticationService.login(request, webRequest));
     }
 }
