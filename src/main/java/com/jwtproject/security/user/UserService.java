@@ -1,13 +1,9 @@
 package com.jwtproject.security.user;
 
-import com.jwtproject.security.audit.AuthenticationLog;
-import com.jwtproject.security.audit.AuthenticationLogRepository;
 import com.jwtproject.security.auth.models.LoginRequest;
 import com.jwtproject.security.auth.models.SignUpRequest;
-import com.jwtproject.security.exception.AccountNotVerifiedException;
 import com.jwtproject.security.exception.UserAlreadyExistsException;
 import com.jwtproject.security.user.models.User;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +27,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final AuthenticationLogRepository authenticationLogRepository;
 
     public UserDetails signUp(@NotNull SignUpRequest request) {
         User user = findUserByEmail(request.getEmail());
@@ -51,14 +46,6 @@ public class UserService {
             catch (DataIntegrityViolationException ex) {
                 throw new RuntimeException("There was an error registering the user");
             }
-
-        }
-        else if (!user.isEnabled() && !user.getVerificationToken().getIsExpired()) {
-            throw new AccountNotVerifiedException("Your account has not been confirmed. Please check your email");
-        }
-        else if (user.getVerificationToken().getIsExpired()) {
-            log.error("Should send an email because the verification token is expired");
-            throw new RuntimeException("Should send an email because the verification token is expired");
         }
         else {
             throw new UserAlreadyExistsException("An account is already registered with your email address. Please log in.");
@@ -71,20 +58,12 @@ public class UserService {
         return user.orElse(null);
     }
 
-    public UserDetails login(@NotNull LoginRequest request, HttpServletRequest webRequest) {
+    public UserDetails login(@NotNull LoginRequest request) {
         log.info("Authenticating user {}", request.getEmail());
         UserDetails user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User was not found"));
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
-
-        AuthenticationLog audit = new AuthenticationLog().builder()
-                .ipAddress(webRequest.getRemoteAddr())
-                .loggedInAt(LocalDateTime.now())
-                .user((User)user)
-                .build();
-
-        authenticationLogRepository.save(audit);
         log.info("Logging user by email authenticated?: {}", authentication.isAuthenticated());
         return user;
     }
