@@ -1,7 +1,11 @@
 package com.jwtproject.security.events;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.security.core.userdetails.UserDetails;
+@Getter
+@Setter
 public class OnRegistrationEvent extends ApplicationEvent {
     private String appUrl;
     private UserDetails userDetails;
@@ -10,13 +14,5 @@ public class OnRegistrationEvent extends ApplicationEvent {
         super(userDetails);
         this.appUrl = appUrl;
         this.userDetails = userDetails;
-    }
-
-    public UserDetails getUserDetails() {
-        return userDetails;
-    }
-
-    public String getAppUrl() {
-        return appUrl;
     }
 }
