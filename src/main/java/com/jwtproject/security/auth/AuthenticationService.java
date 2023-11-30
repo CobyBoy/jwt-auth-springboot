@@ -3,6 +3,7 @@ package com.jwtproject.security.auth;
 import com.jwtproject.security.auth.models.LoginRequest;
 import com.jwtproject.security.auth.models.AuthenticationResponse;
 import com.jwtproject.security.auth.models.SignUpRequest;
+import com.jwtproject.security.events.OnLoginEvent;
 import com.jwtproject.security.events.OnRegistrationEvent;
 import com.jwtproject.security.jwt.JwtService;
 import com.jwtproject.security.user.UserService;
@@ -32,7 +33,9 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse login(LoginRequest request, HttpServletRequest webRequest) {
-        String jwtToken = jwtService.generateToken(userService.login(request, webRequest));
+        UserDetails userDetails = userService.login(request);
+        eventPublisher.publishEvent(new OnLoginEvent(userDetails, webRequest));
+        String jwtToken = jwtService.generateToken(userDetails);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
