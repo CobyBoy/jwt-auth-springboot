@@ -26,6 +26,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    public static final int MAX_LOGIN_ATTEMPT = 10;
     private String firstName;
     private String lastName;
     private String email;
@@ -40,6 +41,7 @@ public class User implements UserDetails {
     private VerificationToken verificationToken;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<AuthenticationLog> auditLogin;
     @Enumerated(EnumType.STRING)
     private UserRoles userRole;
@@ -59,7 +61,6 @@ public class User implements UserDetails {
         return password;
     }
 
-
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -67,7 +68,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !(this.getAccessFailedCount() == MAX_LOGIN_ATTEMPT);
     }
 
     @Override
