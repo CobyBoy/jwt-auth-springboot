@@ -33,12 +33,12 @@ public class VerificationToken {
         this.token = UUID.randomUUID().toString();
         this.user = (User) userDetails;
         this.createdAt = LocalDateTime.now();
-        this.expiryDate = calculateExpiryDate(EXPIRATION);
+        this.expiryDate = calculateExpiryDate();
         this.isExpired = isTokenExpired();
     }
 
-    private LocalDateTime calculateExpiryDate(int expiryTimeInMinutes) {
-        return LocalDateTime.now().plusMinutes(expiryTimeInMinutes);
+    private LocalDateTime calculateExpiryDate() {
+        return LocalDateTime.now().plusMinutes(VerificationToken.EXPIRATION);
     }
 
     private Boolean isTokenExpired() {
