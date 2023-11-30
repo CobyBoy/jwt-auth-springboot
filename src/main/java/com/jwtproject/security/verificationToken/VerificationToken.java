@@ -14,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "verification_token")
 public class VerificationToken {
     private static final int EXPIRATION = 60 * 24;
     @Id
