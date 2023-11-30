@@ -26,8 +26,8 @@ public class ApplicationConfig {
         return username -> {
             var user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Email not found"));
             if (!user.isEnabled()) {
-                log.error("Account is not confirmed");
-                throw new AccountNotVerifiedException("Account not confirmed!");
+                log.error("Registration is not confirmed");
+                throw new AccountNotVerifiedException("Registration not confirmed!");
             }
             return user;
         };
