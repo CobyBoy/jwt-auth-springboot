@@ -1,5 +1,6 @@
 package com.jwtproject.security.account;
 
+import com.jwtproject.security.dto.ApiResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +13,7 @@ public class AccountActivationController {
     private final AccountActivationService accountActivationService;
 
     @GetMapping("/api/v1/confirm-account")
-    public ResponseEntity confirmAccount(@RequestParam("token") String token) {
-        accountActivationService.activateAccount(token);
-        return ResponseEntity.ok("Confirm account");
+    public ResponseEntity<ApiResponseDto> confirmAccount(@RequestParam("token") String confirmationToken) {
+        return ResponseEntity.ok(accountActivationService.activateAccount(confirmationToken));
     }
 }
