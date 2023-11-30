@@ -5,6 +5,8 @@ import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,7 +24,7 @@ import java.util.List;
 public class RestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiErrorDto> handleNotValidException(MethodArgumentNotValidException ex) {
         log.error("Validation failed");
         List<String> errors = new ArrayList<>();
         ex.getAllErrors().forEach(err -> errors.add(err.getDefaultMessage()));
@@ -38,7 +40,7 @@ public class RestExceptionHandler {
                         .build());
     }
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<?> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+    public ResponseEntity<ApiErrorDto> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
         log.error("User already exists exception");
         HttpStatus httpStatus = HttpStatus.EXPECTATION_FAILED;
         return ResponseEntity.status(httpStatus)
@@ -66,8 +68,29 @@ public class RestExceptionHandler {
                     );
         }
 
+        if (ex instanceof BadCredentialsException) {
+            HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+            return ResponseEntity.status(httpStatus)
+                    .body(ApiErrorDto.builder()
+                            .httpStatus(httpStatus)
+                            .statusCode(httpStatus.value())
+                            .message(ex.getMessage())
+                            .build()
+                    );
+        }
+
         if (ex instanceof UsernameNotFoundException) {
             HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
+            return ResponseEntity.status(httpStatus)
+                    .body(ApiErrorDto.builder()
+                            .httpStatus(httpStatus)
+                            .statusCode(httpStatus.value())
+                            .message(ex.getMessage())
+                            .build()
+                    );
+        }
+        if (ex instanceof LockedException) {
+            HttpStatus httpStatus = HttpStatus.LOCKED;
             return ResponseEntity.status(httpStatus)
                     .body(ApiErrorDto.builder()
                             .httpStatus(httpStatus)
@@ -87,9 +110,34 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity handleHttpRequestMethodNotSupportedException (HttpRequestMethodNotSupportedException ex) {
-        log.error("HttpRequestMethodNotSupportedExceptionexception thrown");
+    public ResponseEntity<ApiErrorDto> handleHttpRequestMethodNotSupportedException (HttpRequestMethodNotSupportedException ex) {
+        log.error("HttpRequestMethodNotSupportedException thrown");
         HttpStatus httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build()
+                );
+    }
+    @ExceptionHandler(AccountAlreadyVerifiedException.class)
+    public ResponseEntity<ApiErrorDto> handleAccountAlreadyVerifiedException(AccountAlreadyVerifiedException ex) {
+        log.error("AccountAlreadyVerifiedException thrown");
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ResponseEntity<ApiErrorDto> handleTokenNotFoundException(TokenNotFoundException ex) {
+        log.error("TokenNotFoundException thrown");
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
                         .httpStatus(httpStatus)
