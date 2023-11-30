@@ -21,4 +21,5 @@ public class AuthenticationLog {
     private User user;
     private String ipAddress;
     private LocalDateTime loggedInAt;
+    private Boolean isSuccessful;
 }
