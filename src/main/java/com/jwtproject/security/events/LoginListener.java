@@ -5,6 +5,7 @@ import com.jwtproject.security.audit.AuthenticationLogRepository;
 import com.jwtproject.security.user.models.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -21,9 +22,9 @@ public class LoginListener  implements ApplicationListener<OnLoginEvent> {
 
     @Override
     @Async
-    public void onApplicationEvent(OnLoginEvent event) {
+    public void onApplicationEvent(@NotNull OnLoginEvent event) {
         log.info("Login event fired {}", event);
-        authenticationLogRepository.save(new AuthenticationLog().builder()
+        authenticationLogRepository.save(AuthenticationLog.builder()
                 .ipAddress(event.getWebRequest().getRemoteAddr())
                 .loggedInAt(LocalDateTime.now())
                 .isSuccessful(true)
